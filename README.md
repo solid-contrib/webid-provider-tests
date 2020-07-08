@@ -1,5 +1,5 @@
 # webid-provider-tests
-A test suite with some basic happy-path checks against a DPop-based WebID-OIDC provider.
+A test suite with some basic happy-path checks against a [DPop-based WebID-OIDC](https://github.com/solid/authentication-panel/blob/master/oidc-authentication.md) provider.
 
 ## Usage
 Make sure you have `git` and `node`, in a terminal run:
