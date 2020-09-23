@@ -11,14 +11,13 @@ const debug = Debug("token tests");
 
 const ALICE_WEBID = process.env.ALICE_WEBID;
 const SERVER_ROOT = process.env.SERVER_ROOT || "https://server";
-const LOGIN_URL = `${SERVER_ROOT}/login`;
 const query2 =
   "?response_type=id_token%20code&redirect_uri=http%3A%2F%2Flocalhost%3A3002%2Fredirect&scope=openid%20profile%20offline_access&client_id=coolApp2&code_challenge_method=S256&code_challenge=M3CBok-0kQFc0GUz2YD90cFee0XzTTru3Eaj0Ubm-oc&state=84ae2b48-eb1b-4000-8782-ac1cd748aeb0";
 
 function hashClaim(value, hashLength) {
   if (value) {
     const alg = { name: `SHA-${hashLength}` };
-    const octets = new Buffer(value, "ascii");
+    const octets = Buffer.from(value, "ascii");
 
     return subtle.digest(alg, new Uint8Array(octets)).then((digest) => {
       const hash = Buffer.from(digest);
@@ -44,7 +43,9 @@ describe("The IODC token", () => {
     debug("jwks", jwks);
 
     const authorizationEndpoint = configObj.authorization_endpoint;
-    const cookie = await getCookie(LOGIN_URL);
+    const cookie = await getCookie();
+
+    console.log("using cookie", cookie);
     const authorizeFetchResult1 = await fetch(
       `${authorizationEndpoint}?response_type=id_token%20code&display=&scope=openid%20profile%20offline_access&client_id=coolApp2&redirect_uri=http%3A%2F%2Flocalhost%3A3002%2Fredirect&state=84ae2b48-eb1b-4000-8782-ac1cd748aeb0&nonce=&request=`,
       {
