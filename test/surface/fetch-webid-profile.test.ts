@@ -15,6 +15,7 @@ describe("Alice's webid profile", () => {
     // console.log(ALICE_WEBID);
     subAlice = doc.getSubject(ALICE_WEBID);
     subDoc = doc.getSubject(doc.asRef());
+    // console.log(subAlice.getAllRefs());
   });
 
   test("Alice has an ldp:inbox", async () => {
