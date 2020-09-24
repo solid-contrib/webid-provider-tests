@@ -26,7 +26,9 @@ describe("Alice's webid profile", () => {
   });
 
   test("Alice has a space:preferencesFile", async () => {
-    expect(subAlice.getRef(space.preferencesFile).startsWith("https://")).toEqual(true);
+    expect(
+      subAlice.getRef(space.preferencesFile).startsWith("https://")
+    ).toEqual(true);
   });
 
   test("Alice has a solid:account", async () => {
@@ -34,15 +36,21 @@ describe("Alice's webid profile", () => {
   });
 
   test("Alice has a space:preferencesFile", async () => {
-    expect(subAlice.getRef(space.preferencesFile).startsWith("https://")).toEqual(true);
+    expect(
+      subAlice.getRef(space.preferencesFile).startsWith("https://")
+    ).toEqual(true);
   });
 
   test("Alice has a solid:privateTypeIndex", async () => {
-    expect(subAlice.getRef(solid.privateTypeIndex).startsWith("https://")).toEqual(true);
+    expect(
+      subAlice.getRef(solid.privateTypeIndex).startsWith("https://")
+    ).toEqual(true);
   });
 
   test("Alice has a solid:publicTypeIndex", async () => {
-    expect(subAlice.getRef(solid.publicTypeIndex).startsWith("https://")).toEqual(true);
+    expect(
+      subAlice.getRef(solid.publicTypeIndex).startsWith("https://")
+    ).toEqual(true);
   });
 
   test("doc itself is a foaf:PersonalProfileDocument", async () => {
@@ -69,7 +77,8 @@ describe("Alice's webid profile", () => {
   });
 
   test.skip("Alice has a vcard:hasPhoto", async () => {
-    expect(subAlice.getRef(vcard.hasPhoto).startsWith("https://")).toEqual(true);
+    expect(subAlice.getRef(vcard.hasPhoto).startsWith("https://")).toEqual(
+      true
+    );
   });
-
 });
