@@ -90,11 +90,16 @@ describe("The server's openid configuration", () => {
   // request_parameter_supported: true,
   // request_uri_parameter_supported: false,
   // require_request_uri_registration: false,
-  test("announces a check-session iframe", async () => {
+
+  // `check_session_iframe` is not listed in
+  // https://openid.net/specs/openid-connect-discovery-1_0.html#ProviderMetadata
+  test.skip("announces a check-session iframe", async () => {
     expect(configObj.check_session_iframe.startsWith("https://")).toEqual(true);
   });
 
-  test("announces an end-session endpoint", async () => {
+  // `end_session_endpoint` is not listed in
+  // https://openid.net/specs/openid-connect-discovery-1_0.html#ProviderMetadata
+  test.skip("announces an end-session endpoint", async () => {
     expect(configObj.end_session_endpoint.startsWith("https://")).toEqual(true);
   });
 
