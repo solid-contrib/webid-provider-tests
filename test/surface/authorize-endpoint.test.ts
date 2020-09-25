@@ -41,10 +41,16 @@ describe("The server's authorize endpoint", () => {
   test("when redirected to login, you see a html form", async () => {
     const fetchResult = await fetch(authorizationEndpoint + query1, {
       redirect: "follow",
+	  headers: {
+		'Accept': 'text/html'
+	  }
     });
     expect(fetchResult.status).toEqual(200);
     const body = await fetchResult.text();
-    expect(body.indexOf("form")).not.toEqual(-1);
+	
+	// Nextcloud uses javascript to populate the form in later, so checking for form directly won't work
+    // expect(body.indexOf("form")).not.toEqual(-1);
+	expect(body.indexOf("login")).not.toEqual(-1);
   });
 
   test("the authorize URL with cookie sends you to consent", async () => {
@@ -96,20 +102,20 @@ describe("The server's authorize endpoint", () => {
         cookie,
       },
       body:
-        "access_mode=Read&access_mode=Append&access_mode=Write&access_mode=Control&consent=true&response_type=id_token+code&display=&scope=openid+profile+offline_access&client_id=coolApp2&redirect_uri=http%3A%2F%2Flocalhost%3A3002%2Fredirect&state=84ae2b48-eb1b-4000-8782-ac1cd748aeb0&nonce=&request=",
+        "access_mode=Read&access_mode=Append&access_mode=Write&access_mode=Control&consent=true&response_type=id_token+code&display=&scope=openid+profile+offline_access&client_id=coolApp2&redirect_uri=http%3A%2F%2Flocalhost%3A3002%2Fredirect&state=84ae2b48-eb1b-4000-8782-ac1cd748aeb0&nonce=12345&request=",
       method: "POST",
       redirect: "manual",
     });
     expect(fetchResult.status).toEqual(302);
     expect(fetchResult.headers.get("location")).toEqual(
-      `${authorizationEndpoint}?response_type=id_token%20code&display=&scope=openid%20profile%20offline_access&client_id=coolApp2&redirect_uri=http%3A%2F%2Flocalhost%3A3002%2Fredirect&state=84ae2b48-eb1b-4000-8782-ac1cd748aeb0&nonce=&request=`
+      `${authorizationEndpoint}?response_type=id_token%20code&display=&scope=openid%20profile%20offline_access&client_id=coolApp2&redirect_uri=http%3A%2F%2Flocalhost%3A3002%2Fredirect&state=84ae2b48-eb1b-4000-8782-ac1cd748aeb0&nonce=12345&request=`
     );
   });
 
   test("Authorize with cookie after consent redirects you back to the app", async () => {
     // This test uses the consented coolApp2
     const fetchResult = await fetch(
-      `${authorizationEndpoint}?response_type=id_token%20code&display=&scope=openid%20profile%20offline_access&client_id=coolApp2&redirect_uri=http%3A%2F%2Flocalhost%3A3002%2Fredirect&state=84ae2b48-eb1b-4000-8782-ac1cd748aeb0&nonce=&request=`,
+      `${authorizationEndpoint}?response_type=id_token%20code&display=&scope=openid%20profile%20offline_access&client_id=coolApp2&redirect_uri=http%3A%2F%2Flocalhost%3A3002%2Fredirect&state=84ae2b48-eb1b-4000-8782-ac1cd748aeb0&nonce=12345&request=`,
       {
         headers: {
           cookie,
