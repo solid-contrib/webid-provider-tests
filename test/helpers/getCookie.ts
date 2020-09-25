@@ -18,7 +18,7 @@ async function getCookieNextcloudCompatible() {
   await page.click("#submit-form");
   await new Promise((resolve) => setTimeout(resolve, 2000));
   const cookies = await page.cookies();
-  console.log(cookies);
+  // console.log(cookies);
   const cookieStr = cookies
     .map(({ name, value }) => `${name}=${value}`)
     .join("; ");

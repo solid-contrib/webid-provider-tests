@@ -8,6 +8,8 @@ const query1 =
 // const query2 =
 //   "?response_type=id_token%20code&redirect_uri=http%3A%2F%2Flocalhost%3A3002%2Fredirect&scope=openid%20profile%20offline_access&client_id=coolApp2&code_challenge_method=S256&code_challenge=M3CBok-0kQFc0GUz2YD90cFee0XzTTru3Eaj0Ubm-oc&state=84ae2b48-eb1b-4000-8782-ac1cd748aeb0";
 
+jest.setTimeout(10000);
+
 describe("The server's authorize endpoint", () => {
   let authorizationEndpoint;
   let cookie;
