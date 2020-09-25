@@ -66,7 +66,7 @@ describe("The server's authorize endpoint", () => {
     );
   });
 
-  test("when redirected to consent, there is a html form", async () => {
+  test.skip("when redirected to consent, there is a html form", async () => {
     // This test uses the unconsented coolApp1
     const fetchResult = await fetch(authorizationEndpoint + query1, {
       headers: {
