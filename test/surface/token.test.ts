@@ -56,7 +56,7 @@ describe("The IODC token", () => {
         redirect: "manual",
       }
     );
-    expect(authorizeFetchResult1.status).toEqual(302);
+/*    expect(authorizeFetchResult1.status).toEqual(302);
     const authorizeFetchResult2 = await fetch(
       authorizeFetchResult1.headers.get("location"),
       {
@@ -77,10 +77,13 @@ describe("The IODC token", () => {
       }
     );
     expect(authorizeFetchResult3.status).toEqual(302);
-    const callbackParams = authorizeFetchResult3.headers
+*/	
+	var returnedUrl = authorizeFetchResult1.headers.get("location");
+    const callbackParams = authorizeFetchResult1.headers
       .get("location")
       .substring("http://localhost:3002/redirect?".length)
       .split("&");
+	// FIXME: the order of the params should not matter;
     code = callbackParams[0].substring("code=".length);
     idTokenJwt = callbackParams[1].substring("id_token=".length);
     idTokenObj = decode(idTokenJwt);
