@@ -2,6 +2,7 @@ import fetch from "node-fetch";
 import { getCookie } from "../helpers/getCookie";
 
 const SERVER_ROOT = process.env.SERVER_ROOT || "https://server";
+const LOGIN_URL = process.env.LOGIN_URL || `${SERVER_ROOT}/login/password`;
 const query1 =
   "?response_type=id_token%20code&redirect_uri=http%3A%2F%2Flocalhost%3A3001%2Fredirect&scope=openid%20profile%20offline_access&client_id=coolApp1&code_challenge_method=S256&code_challenge=M3CBok-0kQFc0GUz2YD90cFee0XzTTru3Eaj0Ubm-oc&state=84ae2b48-eb1b-4000-8782-ac1cd748aeb0";
 // const query2 =
@@ -28,11 +29,13 @@ describe("The server's authorize endpoint", () => {
   test("the authorize URL without cookie sends you to login", async () => {
     const fetchResult = await fetch(authorizationEndpoint + query1, {
       redirect: "manual",
+	  headers: {
+		'Accept': 'text/html'
+	  }
     });
-    expect(fetchResult.status).toEqual(302);
-    expect(fetchResult.headers.get("location")).toEqual(
-      `${SERVER_ROOT}/login` + query1
-    );
+	expect(fetchResult.status).toBeGreaterThanOrEqual(300); // Nextcloud uses 303 to redirect
+    expect(fetchResult.status).toBeLessThan(400);
+    expect(fetchResult.headers.get('location').startsWith(`${LOGIN_URL}`));
   });
 
   test("when redirected to login, you see a html form", async () => {
