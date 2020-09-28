@@ -25,6 +25,18 @@ function hashClaim(value, hashLength) {
 
 jest.setTimeout(10000);
 
+async function getCookie() {
+  const result = await fetch(`${SERVER_ROOT}/login/password`, {
+    headers: {
+      "content-type": "application/x-www-form-urlencoded",
+    },
+    body: "username=alice&password=123",
+    method: "POST",
+    redirect: "manual",
+  });
+  return result.headers.get("set-cookie");
+}
+
 describe("The IODC token", () => {
   let code;
   let idTokenJwt;
@@ -41,11 +53,19 @@ describe("The IODC token", () => {
     debug("jwks", jwks);
 
     const authorizationEndpoint = configObj.authorization_endpoint;
-    const cookie = process.env.COOKIE;
 
-    console.log("using cookie", cookie);
-    const authorizeFetchResult1 = await fetch(
-      `${authorizationEndpoint}?response_type=id_token%20code&display=&scope=openid%20profile%20offline_access&client_id=CoolApp&redirect_uri=http%3A%2F%2Flocalhost%3A3002%2Fredirect&state=84ae2b48-eb1b-4000-8782-ac1cd748aeb0&nonce=12345&request=`,
+    let cookie;
+    if (process.env.COOKIE) {
+      console.log("Using cookie from env var");
+      cookie = process.env.COOKIE;
+      await new Promise((resolve) => setTimeout(resolve, 100));
+    } else {
+      console.log("Obtaining cookie");
+      cookie = await getCookie();
+    }
+    console.log({ cookie });
+    let authorizeFetchResult = await fetch(
+      `${authorizationEndpoint}?response_type=id_token%20code&display=&scope=openid%20profile%20offline_access&client_id=coolApp2&redirect_uri=http%3A%2F%2Flocalhost%3A3002%2Fredirect&state=84ae2b48-eb1b-4000-8782-ac1cd748aeb0&nonce=12345&request=`,
       {
         headers: {
           cookie,
@@ -53,35 +73,32 @@ describe("The IODC token", () => {
         redirect: "manual",
       }
     );
-    /*    expect(authorizeFetchResult1.status).toEqual(302);
-    const authorizeFetchResult2 = await fetch(
-      authorizeFetchResult1.headers.get("location"),
-      {
-        headers: {
-          cookie,
-        },
-        redirect: "manual",
-      }
-    );
-    expect(authorizeFetchResult2.status).toEqual(302);
-    const authorizeFetchResult3 = await fetch(
-      authorizeFetchResult2.headers.get("location"),
-      {
-        headers: {
-          cookie,
-        },
-        redirect: "manual",
-      }
-    );
-    expect(authorizeFetchResult3.status).toEqual(302);
-*/
-
-    // const returnedUrl = authorizeFetchResult1.headers.get("location");
-    const callbackParams = authorizeFetchResult1.headers
+    expect(authorizeFetchResult.status).toEqual(302);
+    const redirectUri = "http://localhost:3002/redirect?";
+    while (
+      authorizeFetchResult.headers
+        .get("location")
+        .substring(0, redirectUri.length) !== redirectUri
+    ) {
+      console.log(
+        "Not redirected back yet",
+        authorizeFetchResult.headers.get("location")
+      );
+      authorizeFetchResult = await fetch(
+        authorizeFetchResult.headers.get("location"),
+        {
+          headers: {
+            cookie,
+          },
+          redirect: "manual",
+        }
+      );
+    }
+    const callbackParams = authorizeFetchResult.headers
       .get("location")
-      .substring("http://localhost:3002/redirect?".length)
+      .substring(redirectUri.length)
       .split("&");
-    // FIXME: the order of the params should not matter;
+    console.log("Redirected back now", callbackParams);
     code = callbackParams[0].substring("code=".length);
     idTokenJwt = callbackParams[1].substring("id_token=".length);
     idTokenObj = decode(idTokenJwt);
