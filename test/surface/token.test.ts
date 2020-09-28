@@ -5,7 +5,6 @@ import fetch from "node-fetch";
 import { subtle } from "isomorphic-webcrypto";
 import base64url from "base64url";
 import * as RSA from "node-rsa";
-
 const debug = Debug("token tests");
 
 const ALICE_WEBID = process.env.ALICE_WEBID;
@@ -161,7 +160,7 @@ describe("The IODC token", () => {
       const publicPem: string = rsaPubKey.exportKey("pkcs1-public-pem");
       debug("publicPem", publicPem);
       try {
-        const result = verify(idTokenJwt, publicPem, {
+        verify(idTokenJwt, publicPem, {
           algorithms: ["RS256"],
         });
         // console.log(result, key.kid, 'yes');
