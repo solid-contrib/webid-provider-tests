@@ -1,9 +1,7 @@
-import fetch from "node-fetch";
 import { fetchDocument } from "tripledoc";
 import { ldp, foaf, rdf, schema, vcard, solid, space } from "rdf-namespaces";
 
 const ALICE_WEBID = process.env.ALICE_WEBID;
-const SERVER_ROOT = process.env.SERVER_ROOT || "https://server";
 
 describe("Alice's webid profile", () => {
   let doc;
@@ -60,7 +58,6 @@ describe("Alice's webid profile", () => {
   });
 
   test("Alice is the foaf:primaryTopic of the profile doc", async () => {
-    const profileTypes = subDoc.getAllRefs(rdf.type);
     expect(subDoc.getRef(foaf.primaryTopic)).toEqual(subAlice.asRef());
   });
 

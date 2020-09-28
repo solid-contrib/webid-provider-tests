@@ -1,19 +1,14 @@
 import { decode, verify } from "jsonwebtoken";
 import Debug from "debug";
-import fetch, { Response } from "node-fetch";
+import fetch from "node-fetch";
 
 import { subtle } from "isomorphic-webcrypto";
 import base64url from "base64url";
 import * as RSA from "node-rsa";
-import { getCookie } from "../helpers/getCookie";
-
 const debug = Debug("token tests");
 
 const ALICE_WEBID = process.env.ALICE_WEBID;
 const SERVER_ROOT = process.env.SERVER_ROOT || "https://server";
-const LOGIN_URL = process.env.LOGIN_URL || `${SERVER_ROOT}/login/password`;
-const query2 =
-  "?response_type=id_token%20code&redirect_uri=http%3A%2F%2Flocalhost%3A3002%2Fredirect&scope=openid%20profile%20offline_access&client_id=coolApp2&code_challenge_method=S256&code_challenge=M3CBok-0kQFc0GUz2YD90cFee0XzTTru3Eaj0Ubm-oc&state=84ae2b48-eb1b-4000-8782-ac1cd748aeb0";
 
 function hashClaim(value, hashLength) {
   if (value) {
@@ -46,7 +41,7 @@ describe("The IODC token", () => {
     debug("jwks", jwks);
 
     const authorizationEndpoint = configObj.authorization_endpoint;
-    const cookie = await getCookie();
+    const cookie = process.env.COOKIE;
 
     console.log("using cookie", cookie);
     const authorizeFetchResult1 = await fetch(
@@ -149,7 +144,7 @@ describe("The IODC token", () => {
       const publicPem: string = rsaPubKey.exportKey("pkcs1-public-pem");
       debug("publicPem", publicPem);
       try {
-        const result = verify(idTokenJwt, publicPem, {
+        verify(idTokenJwt, publicPem, {
           algorithms: ["RS256"],
         });
         // console.log(result, key.kid, 'yes');

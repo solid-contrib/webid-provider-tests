@@ -1,5 +1,4 @@
 import fetch from "node-fetch";
-import { getCookie } from "../helpers/getCookie";
 
 const SERVER_ROOT = process.env.SERVER_ROOT || "https://server";
 const LOGIN_URL = process.env.LOGIN_URL || `${SERVER_ROOT}/login/password`;
@@ -15,7 +14,7 @@ describe("The server's authorize endpoint", () => {
   let cookie;
 
   beforeAll(async () => {
-    cookie = await getCookie();
+    cookie = process.env.COOKIE;
     const configFetchResult = await fetch(
       `${SERVER_ROOT}/.well-known/openid-configuration`
     );
