@@ -64,8 +64,8 @@ describe("The IODC token", () => {
       cookie = await getCookie();
     }
     console.log({ cookie });
-    const authorizeFetchResult1 = await fetch(
-      `${authorizationEndpoint}?response_type=id_token%20code&display=&scope=openid%20profile%20offline_access&client_id=coolApp2&redirect_uri=http%3A%2F%2Flocalhost%3A3002%2Fredirect&state=84ae2b48-eb1b-4000-8782-ac1cd748aeb0&nonce=&request=`,
+    let authorizeFetchResult = await fetch(
+      `${authorizationEndpoint}?response_type=id_token%20code&display=&scope=openid%20profile%20offline_access&client_id=coolApp2&redirect_uri=http%3A%2F%2Flocalhost%3A3002%2Fredirect&state=84ae2b48-eb1b-4000-8782-ac1cd748aeb0&nonce=12345&request=`,
       {
         headers: {
           cookie,
@@ -73,31 +73,32 @@ describe("The IODC token", () => {
         redirect: "manual",
       }
     );
-    expect(authorizeFetchResult1.status).toEqual(302);
-    const authorizeFetchResult2 = await fetch(
-      authorizeFetchResult1.headers.get("location"),
-      {
-        headers: {
-          cookie,
-        },
-        redirect: "manual",
-      }
-    );
-    expect(authorizeFetchResult2.status).toEqual(302);
-    const authorizeFetchResult3 = await fetch(
-      authorizeFetchResult2.headers.get("location"),
-      {
-        headers: {
-          cookie,
-        },
-        redirect: "manual",
-      }
-    );
-    expect(authorizeFetchResult3.status).toEqual(302);
-    const callbackParams = authorizeFetchResult3.headers
+    expect(authorizeFetchResult.status).toEqual(302);
+    const redirectUri = "http://localhost:3002/redirect?";
+    while (
+      authorizeFetchResult.headers
+        .get("location")
+        .substring(0, redirectUri.length) !== redirectUri
+    ) {
+      console.log(
+        "Not redirected back yet",
+        authorizeFetchResult.headers.get("location")
+      );
+      authorizeFetchResult = await fetch(
+        authorizeFetchResult.headers.get("location"),
+        {
+          headers: {
+            cookie,
+          },
+          redirect: "manual",
+        }
+      );
+    }
+    const callbackParams = authorizeFetchResult.headers
       .get("location")
-      .substring("http://localhost:3002/redirect?".length)
+      .substring(redirectUri.length)
       .split("&");
+    console.log("Redirected back now", callbackParams);
     code = callbackParams[0].substring("code=".length);
     idTokenJwt = callbackParams[1].substring("id_token=".length);
     idTokenObj = decode(idTokenJwt);
