@@ -64,27 +64,27 @@ describe("The IODC token", () => {
       console.log("Obtaining cookie");
       cookie = await getCookie();
     }
-	let registrationData = {
-		"issuer":"${SERVER_ROOT}",
-		"grant_types":["implicit"],
-		"redirect_uris":["http://localhost:3002/redirect"],
-		"response_types":["id_token token"],
-		"scope":"openid profile"
-	};
-	
-	let registerResult = await fetch( `${registerEndpoint}`, {
-		method: "post",
-		body: JSON.stringify(registrationData),
-		headers: {
-			cookie,
-			"Content-Type": "application/json" 
-		},
-		redirect: "manual",
-	});
-	let registerJson = await(registerResult.json());
+  let registrationData = {
+    "issuer":"${SERVER_ROOT}",
+    "grant_types":["implicit"],
+    "redirect_uris":["http://localhost:3002/redirect"],
+    "response_types":["id_token token"],
+    "scope":"openid profile"
+  };
+  
+  let registerResult = await fetch( `${registerEndpoint}`, {
+    method: "post",
+    body: JSON.stringify(registrationData),
+    headers: {
+      cookie,
+      "Content-Type": "application/json" 
+    },
+    redirect: "manual",
+  });
+  let registerJson = await(registerResult.json());
     let clientId = registerJson.client_id;
     console.log({clientId});
-	
+  
     let authorizeFetchResult = await fetch(
       `${authorizationEndpoint}?response_type=id_token%20code&display=&scope=openid%20profile%20offline_access&client_id=${clientId}&redirect_uri=http%3A%2F%2Flocalhost%3A3002%2Fredirect&state=84ae2b48-eb1b-4000-8782-ac1cd748aeb0&nonce=12345&request=`,
       {
@@ -105,15 +105,36 @@ describe("The IODC token", () => {
         "Not redirected back yet",
         authorizeFetchResult.headers.get("location")
       );
-      authorizeFetchResult = await fetch(
-        authorizeFetchResult.headers.get("location"),
-        {
-          headers: {
-            cookie,
-          },
-          redirect: "manual",
-        }
-      );
+    
+      // give approval
+      let target = authorizeFetchResult.headers.get("location");
+      if (target.indexOf("/sharing/") > -1) {
+		let formBody = "returnUrl=" + target.split(/returnUrl=/)[1] + "&approval=allow";
+		console.log({formBody});
+		
+        authorizeFetchResult = await fetch(
+          target,
+          {
+            headers: {
+              cookie,
+		      'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+            },
+            method: "POST",
+            redirect: "manual",
+	        body : formBody
+          }
+		);
+      } else {
+        authorizeFetchResult = await fetch(
+          authorizeFetchResult.headers.get("location"),
+          {
+            headers: {
+              cookie,
+            },
+            redirect: "manual",
+          }
+        );
+	  }
     }
     const callbackParams = authorizeFetchResult.headers
       .get("location")
