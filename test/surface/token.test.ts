@@ -118,12 +118,12 @@ describe("The IODC token", () => {
     expect(idTokenObj.iss).toEqual(SERVER_ROOT);
   });
 
-  test.skip("id token has the right audience", async () => {
-    expect(idTokenObj.aud).toEqual("coolApp2");
-  });
-  test.skip("id token has the right authorized party", async () => {
-    expect(idTokenObj.azp).toEqual("coolApp2");
-  });
+  // test.skip("id token has the right audience", async () => {
+  //   expect(idTokenObj.aud).toEqual("coolApp2");
+  // });
+  // test.skip("id token has the right authorized party", async () => {
+  //   expect(idTokenObj.azp).toEqual("coolApp2");
+  // });
   test("id token has the right subject", async () => {
     expect(idTokenObj.sub).toEqual(ALICE_WEBID);
   });

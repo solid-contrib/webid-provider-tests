@@ -66,17 +66,17 @@ describe("Alice's webid profile", () => {
     expect(aliceTypes.sort()).toEqual([foaf.Person, schema.Person].sort());
   });
 
-  test.skip("Alice has a foaf:name", async () => {
-    expect(subAlice.getRef(foaf.name).length > 0).toEqual(true);
-  });
+  // test.skip("Alice has a foaf:name", async () => {
+  //   expect(subAlice.getRef(foaf.name).length > 0).toEqual(true);
+  // });
 
-  test.skip("Alice has a vcard:fn", async () => {
-    expect(subAlice.getRef(vcard.fn).length > 0).toEqual(true);
-  });
+  // test.skip("Alice has a vcard:fn", async () => {
+  //   expect(subAlice.getRef(vcard.fn).length > 0).toEqual(true);
+  // });
 
-  test.skip("Alice has a vcard:hasPhoto", async () => {
-    expect(subAlice.getRef(vcard.hasPhoto).startsWith("https://")).toEqual(
-      true
-    );
-  });
+  // test.skip("Alice has a vcard:hasPhoto", async () => {
+  //   expect(subAlice.getRef(vcard.hasPhoto).startsWith("https://")).toEqual(
+  //     true
+  //   );
+  // });
 });

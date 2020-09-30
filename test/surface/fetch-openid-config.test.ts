@@ -41,9 +41,9 @@ describe("The server's openid configuration", () => {
 
   // `token_types_supported` is not listed in
   // https://openid.net/specs/openid-connect-discovery-1_0.html#ProviderMetadata
-  test.skip("announces support for the 'dpop' token type", async () => {
-    expect(configObj.token_types_supported.indexOf("dpop")).not.toEqual(-1);
-  });
+  // test.skip("announces support for the 'dpop' token type", async () => {
+  //   expect(configObj.token_types_supported.indexOf("dpop")).not.toEqual(-1);
+  // });
 
   test("announces support for the 'fragment' response mode", async () => {
     expect(configObj.response_modes_supported.indexOf("fragment")).not.toEqual(
@@ -51,11 +51,11 @@ describe("The server's openid configuration", () => {
     );
   });
 
-  test.skip("announces support for the (some?) grant type", async () => {
-    expect(
-      configObj.grant_types_supported.indexOf("which one should we require?")
-    ).not.toEqual(-1);
-  });
+  // test.skip("announces support for the (some?) grant type", async () => {
+  //   expect(
+  //     configObj.grant_types_supported.indexOf("which one should we require?")
+  //   ).not.toEqual(-1);
+  // });
 
   test("announces support for 'public' subject type", async () => {
     expect(configObj.subject_types_supported.indexOf("public")).not.toEqual(-1);
@@ -93,15 +93,15 @@ describe("The server's openid configuration", () => {
 
   // `check_session_iframe` is not listed in
   // https://openid.net/specs/openid-connect-discovery-1_0.html#ProviderMetadata
-  test.skip("announces a check-session iframe", async () => {
-    expect(configObj.check_session_iframe.startsWith("https://")).toEqual(true);
-  });
+  // test.skip("announces a check-session iframe", async () => {
+  //   expect(configObj.check_session_iframe.startsWith("https://")).toEqual(true);
+  // });
 
   // `end_session_endpoint` is not listed in
   // https://openid.net/specs/openid-connect-discovery-1_0.html#ProviderMetadata
-  test.skip("announces an end-session endpoint", async () => {
-    expect(configObj.end_session_endpoint.startsWith("https://")).toEqual(true);
-  });
+  // test.skip("announces an end-session endpoint", async () => {
+  //   expect(configObj.end_session_endpoint.startsWith("https://")).toEqual(true);
+  // });
 
   test("announces an authorization endpoint", async () => {
     expect(configObj.authorization_endpoint.startsWith("https://")).toEqual(
