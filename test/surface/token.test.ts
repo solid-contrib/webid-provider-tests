@@ -65,7 +65,7 @@ describe("The IODC token", () => {
       cookie = await getCookie();
     }
   let registrationData = {
-    "issuer":"${SERVER_ROOT}",
+    "issuer":`${SERVER_ROOT}`,
     "grant_types":["implicit"],
     "redirect_uris":["http://localhost:3002/redirect"],
     "response_types":["id_token token"],
