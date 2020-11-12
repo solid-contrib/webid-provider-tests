@@ -17,9 +17,11 @@
     "typescript": "^4.0.3"
   },
   "scripts": {
+    "build": "echo nothing to build",
     "jest": "jest",
     "lint": "eslint test/ --ext .ts",
-    "local": "NODE_TLS_REJECT_UNAUTHORIZED=0 SERVER_ROOT=https://localhost ALICE_WEBID=https://localhost/profile/card#me npm run jest"
+    "local": "NODE_TLS_REJECT_UNAUTHORIZED=0 SERVER_ROOT=https://localhost ALICE_WEBID=https://localhost/profile/card#me npm run jest",
+    "postversion": "git push --follow-tags"
   },
   "devDependencies": {
     "@types/jest": "26.0.14",
