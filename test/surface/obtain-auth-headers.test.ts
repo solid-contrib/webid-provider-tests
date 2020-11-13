@@ -1,4 +1,4 @@
-import { getAuthFetcher } from "solid-auth-fetcher";
+import { getAuthFetcher, getAuthHeaders } from "solid-auth-fetcher";
 test("can obtain auth headers", async () => {
   const oidcIssuer = process.env.SERVER_ROOT;
   const cookie = process.env.COOKIE || "";
