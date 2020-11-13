@@ -36,7 +36,7 @@
   },
   "name": "webid-provider-tests",
   "description": "A test suite with some basic happy-path checks against a DPop-based WebID-OIDC provider",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "main": "index.js",
   "repository": {
     "type": "git",
