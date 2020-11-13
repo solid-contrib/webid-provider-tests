@@ -9,6 +9,6 @@ test("can obtain auth headers", async () => {
     "GET",
     authFetcher
   );
-  expect(authHeaders.Authorization.length > 0).toBeTruthy();
-  expect(authHeaders.DPop.length > 0).toBeTruthy();
+  expect(authHeaders.Authorization).toBeGreaterThan(20);
+  expect(authHeaders.DPop).toBeGreaterThan(20);
 });
