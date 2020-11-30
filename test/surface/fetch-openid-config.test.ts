@@ -34,9 +34,10 @@ describe("The server's openid configuration", () => {
   });
 
   test("announces support for the 'id_token code' response type", async () => {
-    expect(
-      configObj.response_types_supported.indexOf("id_token code")
-    ).not.toEqual(-1);
+    expect(configObj.response_types_supported.indexOf("code")).not.toEqual(-1);
+    expect(configObj.response_types_supported.indexOf("id_token")).not.toEqual(
+      -1
+    );
   });
 
   // `token_types_supported` is not listed in
