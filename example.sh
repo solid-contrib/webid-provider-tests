@@ -5,10 +5,7 @@ export SERVER_ROOT=https://server
 export USERNAME=alice
 export PASSWORD=123
 
-#export SERVER_ROOT=https://solid-crud-tests-example-1.solidcommunity.net
-#export USERNAME=solid-crud-tests-example-1
-#export PASSWORD=123
-
+export ALICE_WEBID=$SERVER_ROOT/profile/card#me
 # This curl command is specific to node-solid-server:
 export CURL_RESULT=`curl -ki $SERVER_ROOT/login/password -d"username=$USERNAME&password=$PASSWORD" | grep Set-Cookie`
 # The COOKIE will be used when going through the webid-oidc flow:
