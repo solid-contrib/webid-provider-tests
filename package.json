@@ -26,17 +26,17 @@
     "postversion": "git push --follow-tags"
   },
   "devDependencies": {
-    "@types/jest": "26.0.14",
+    "@types/jest": "26.0.15",
     "@typescript-eslint/eslint-plugin": "4.8.0",
     "@typescript-eslint/parser": "4.8.0",
-    "eslint": "7.10.0",
-    "eslint-config-prettier": "6.12.0",
+    "eslint": "7.13.0",
+    "eslint-config-prettier": "6.15.0",
     "eslint-plugin-prettier": "3.1.4",
     "prettier": "2.1.2"
   },
   "name": "webid-provider-tests",
   "description": "A test suite with some basic happy-path checks against a DPop-based WebID-OIDC provider",
-  "version": "1.2.0",
+  "version": "2.0.0",
   "main": "index.js",
   "repository": {
     "type": "git",
