@@ -16,4 +16,5 @@ export COOKIE=`expr "$CURL_RESULT" : '^Set-Cookie:\ \(.*\).'`
 # The SERVER_ROOT will be used both for webid-oidc discovery and as the base container to run the tests against:
 echo Server root is $SERVER_ROOT
 echo Cookie is $COOKIE
-npm run jest "$@"
+
+npm run jest --json --outputFile="../web-results.json" "$@"

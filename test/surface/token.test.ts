@@ -1,14 +1,12 @@
 import { decode, verify } from "jsonwebtoken";
 import Debug from "debug";
 import fetch from "node-fetch";
-
 import { subtle } from "isomorphic-webcrypto";
 import base64url from "base64url";
 import * as RSA from "node-rsa";
-const debug = Debug("token tests");
+import { oidcIssuer, aliceWebId } from "../helpers/env";
 
-const ALICE_WEBID = process.env.ALICE_WEBID;
-const SERVER_ROOT = process.env.SERVER_ROOT || "https://server";
+const debug = Debug("token tests");
 
 function hashClaim(value, hashLength) {
   if (value) {
@@ -26,7 +24,7 @@ function hashClaim(value, hashLength) {
 jest.setTimeout(10000);
 
 async function getCookie() {
-  const result = await fetch(`${SERVER_ROOT}/login/password`, {
+  const result = await fetch(`${oidcIssuer}/login/password`, {
     headers: {
       "content-type": "application/x-www-form-urlencoded",
     },
@@ -44,7 +42,7 @@ describe("The IODC token", () => {
   let jwks;
   beforeAll(async () => {
     const configFetchResult = await fetch(
-      `${SERVER_ROOT}/.well-known/openid-configuration`
+      `${oidcIssuer}/.well-known/openid-configuration`
     );
     const body = await configFetchResult.text();
     const configObj = JSON.parse(body);
@@ -57,15 +55,15 @@ describe("The IODC token", () => {
 
     let cookie;
     if (process.env.COOKIE) {
-      console.log("Using cookie from env var");
+      // console.log("Using cookie from env var");
       cookie = process.env.COOKIE;
       await new Promise((resolve) => setTimeout(resolve, 100));
     } else {
-      console.log("Obtaining cookie");
+      // console.log("Obtaining cookie");
       cookie = await getCookie();
     }
     const registrationData = {
-      issuer: `${SERVER_ROOT}`,
+      issuer: `${oidcIssuer}`,
       grant_types: ["implicit"],
       redirect_uris: ["http://localhost:3002/redirect"],
       response_types: ["id_token token"],
@@ -83,7 +81,7 @@ describe("The IODC token", () => {
     });
     const registerJson = await registerResult.json();
     const clientId = registerJson.client_id;
-    console.log({ clientId });
+    // console.log({ clientId });
 
     let authorizeFetchResult = await fetch(
       `${authorizationEndpoint}?response_type=id_token%20code&display=&scope=openid%20profile%20offline_access&client_id=${clientId}&redirect_uri=http%3A%2F%2Flocalhost%3A3002%2Fredirect&state=84ae2b48-eb1b-4000-8782-ac1cd748aeb0&nonce=12345&request=`,
@@ -101,17 +99,17 @@ describe("The IODC token", () => {
         .get("location")
         .substring(0, redirectUri.length) !== redirectUri
     ) {
-      console.log(
-        "Not redirected back yet",
-        authorizeFetchResult.headers.get("location")
-      );
+      // console.log(
+      //   "Not redirected back yet",
+      //   authorizeFetchResult.headers.get("location")
+      // );
 
       // give approval
       const target = authorizeFetchResult.headers.get("location");
       if (target.indexOf("/sharing/") > -1) {
         const formBody =
           "returnUrl=" + target.split(/returnUrl=/)[1] + "&approval=allow";
-        console.log({ formBody });
+        // console.log({ formBody });
 
         authorizeFetchResult = await fetch(target, {
           headers: {
@@ -138,24 +136,24 @@ describe("The IODC token", () => {
       .get("location")
       .substring(redirectUri.length)
       .split("&");
-    console.log("Redirected back now", callbackParams);
+    // console.log("Redirected back now", callbackParams);
     code = callbackParams[0].substring("code=".length);
     idTokenJwt = callbackParams[1].substring("id_token=".length);
     idTokenObj = decode(idTokenJwt);
   });
 
   test("Callback redirect receives a code", async () => {
-    console.log({ code });
+    // console.log({ code });
     expect(code.length > 0).toEqual(true);
   });
 
   test("Callback redirect receives an id token", async () => {
-    console.log({ idTokenJwt });
+    // console.log({ idTokenJwt });
     expect(idTokenJwt.length > 0).toEqual(true);
   });
 
   test("id token has the right issuer", async () => {
-    expect(idTokenObj.iss).toEqual(SERVER_ROOT);
+    expect(idTokenObj.iss).toEqual(oidcIssuer);
   });
 
   // test.skip("id token has the right audience", async () => {
@@ -165,7 +163,7 @@ describe("The IODC token", () => {
   //   expect(idTokenObj.azp).toEqual("coolApp2");
   // });
   test("id token has the right subject", async () => {
-    expect(idTokenObj.sub).toEqual(ALICE_WEBID);
+    expect(idTokenObj.sub).toEqual(aliceWebId);
   });
   test("id token has an expiry time a few weeks in the future", async () => {
     const futureWeeks =

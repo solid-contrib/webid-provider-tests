@@ -1,7 +1,6 @@
 import fetch from "node-fetch";
+import { oidcIssuer } from "../helpers/env";
 
-const SERVER_ROOT = process.env.SERVER_ROOT || "https://server";
-const LOGIN_URL = process.env.LOGIN_URL || `${SERVER_ROOT}/login/password`;
 const query1 =
   "?response_type=id_token%20code&redirect_uri=http%3A%2F%2Flocalhost%3A3001%2Fredirect&scope=openid%20profile%20offline_access&client_id=coolApp1&code_challenge_method=S256&code_challenge=M3CBok-0kQFc0GUz2YD90cFee0XzTTru3Eaj0Ubm-oc&state=84ae2b48-eb1b-4000-8782-ac1cd748aeb0";
 // const query2 =
@@ -16,7 +15,7 @@ describe("The server's authorize endpoint", () => {
   beforeAll(async () => {
     cookie = process.env.COOKIE;
     const configFetchResult = await fetch(
-      `${SERVER_ROOT}/.well-known/openid-configuration`
+      `${oidcIssuer}/.well-known/openid-configuration`
     );
     const body = await configFetchResult.text();
     const configObj = JSON.parse(body);
@@ -24,7 +23,7 @@ describe("The server's authorize endpoint", () => {
   });
 
   test("the authorize endpoint is within the system under test", async () => {
-    expect(authorizationEndpoint.startsWith(SERVER_ROOT)).toEqual(true);
+    expect(authorizationEndpoint.startsWith(oidcIssuer)).toEqual(true);
   });
 
   test("the authorize URL without cookie sends you to login", async () => {
@@ -36,7 +35,11 @@ describe("The server's authorize endpoint", () => {
     });
     expect(fetchResult.status).toBeGreaterThanOrEqual(300); // Nextcloud uses 303 to redirect
     expect(fetchResult.status).toBeLessThan(400);
-    expect(fetchResult.headers.get("location").startsWith(`${LOGIN_URL}`));
+    expect(
+      fetchResult.headers
+        .get("location")
+        .startsWith(`${oidcIssuer}/login/password`)
+    );
   });
 
   test("when redirected to login, you see a html form", async () => {
@@ -63,7 +66,7 @@ describe("The server's authorize endpoint", () => {
   //   });
   //   expect(fetchResult.status).toEqual(302);
   //   expect(fetchResult.headers.get("location")).toEqual(
-  //     `${SERVER_ROOT}/sharing${query1}`
+  //     `${oidcIssuer}/sharing${query1}`
   //   );
   // });
 
@@ -90,13 +93,13 @@ describe("The server's authorize endpoint", () => {
   //   });
   //   expect(fetchResult.status).toEqual(302);
   //   expect(fetchResult.headers.get("location")).toEqual(
-  //     `${SERVER_ROOT}/sharing?response_type=id_token%20code&redirect_uri=http%3A%2F%2Flocalhost%3A3001%2Fredirect&scope=openid%20profile%20offline_access&client_id=coolApp1&code_challenge_method=S256&code_challenge=M3CBok-0kQFc0GUz2YD90cFee0XzTTru3Eaj0Ubm-oc&state=84ae2b48-eb1b-4000-8782-ac1cd748aeb0`
+  //     `${oidcIssuer}/sharing?response_type=id_token%20code&redirect_uri=http%3A%2F%2Flocalhost%3A3001%2Fredirect&scope=openid%20profile%20offline_access&client_id=coolApp1&code_challenge_method=S256&code_challenge=M3CBok-0kQFc0GUz2YD90cFee0XzTTru3Eaj0Ubm-oc&state=84ae2b48-eb1b-4000-8782-ac1cd748aeb0`
   //   );
   // });
 
   // test.skip("Giving consent redirects you back to authorize", async () => {
   //   // This test uses the consented coolApp2
-  //   const fetchResult = await fetch(`${SERVER_ROOT}/sharing`, {
+  //   const fetchResult = await fetch(`${oidcIssuer}/sharing`, {
   //     headers: {
   //       "content-type": "application/x-www-form-urlencoded",
   //       "upgrade-insecure-requests": "1",

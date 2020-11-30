@@ -1,10 +1,9 @@
 import fetch from "node-fetch";
-
-const SERVER_ROOT = process.env.SERVER_ROOT || "https://server";
+import { oidcIssuer } from "../helpers/env";
 
 test("/.well-known/openid-configuration is valid JSON", async () => {
   const fetchResult = await fetch(
-    `${SERVER_ROOT}/.well-known/openid-configuration`
+    `${oidcIssuer}/.well-known/openid-configuration`
   );
   // console.log(`${SERVER_ROOT}/.well-known/openid-configuration`);
   expect(fetchResult.status).toEqual(200);
@@ -18,15 +17,13 @@ describe("The server's openid configuration", () => {
   let configObj;
 
   beforeAll(async () => {
-    fetchResult = await fetch(
-      `${SERVER_ROOT}/.well-known/openid-configuration`
-    );
+    fetchResult = await fetch(`${oidcIssuer}/.well-known/openid-configuration`);
     const body = await fetchResult.text();
     configObj = JSON.parse(body);
   });
 
   test("has the server root as the issuer", async () => {
-    expect(configObj.issuer).toEqual(SERVER_ROOT);
+    expect(configObj.issuer).toEqual(oidcIssuer);
   });
 
   test("announces a jwks_uri", async () => {

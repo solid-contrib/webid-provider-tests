@@ -1,7 +1,6 @@
 import { fetchDocument } from "tripledoc";
 import { ldp, foaf, rdf, schema, vcard, solid, space } from "rdf-namespaces";
-
-const ALICE_WEBID = process.env.ALICE_WEBID;
+import { aliceWebId } from "../helpers/env";
 
 describe("Alice's webid profile", () => {
   let doc;
@@ -9,9 +8,9 @@ describe("Alice's webid profile", () => {
   let subDoc;
 
   beforeAll(async () => {
-    doc = await fetchDocument(ALICE_WEBID);
-    // console.log(ALICE_WEBID);
-    subAlice = doc.getSubject(ALICE_WEBID);
+    doc = await fetchDocument(aliceWebId);
+    // console.log(aliceWebId);
+    subAlice = doc.getSubject(aliceWebId);
     subDoc = doc.getSubject(doc.asRef());
     // console.log(subAlice.getAllRefs());
   });
