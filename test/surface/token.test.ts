@@ -4,7 +4,7 @@ import fetch from "node-fetch";
 import { subtle } from "isomorphic-webcrypto";
 import base64url from "base64url";
 import * as RSA from "node-rsa";
-import { oidcIssuer, aliceWebId } from "../helpers/env";
+import { oidcIssuer, aliceWebId, aliceUsername, alicePassword } from "../helpers/env";
 
 const debug = Debug("token tests");
 
@@ -28,7 +28,7 @@ async function getCookie() {
     headers: {
       "content-type": "application/x-www-form-urlencoded",
     },
-    body: "username=alice&password=123",
+    body: `username=${aliceUsername}&password=${alicePassword}`,
     method: "POST",
     redirect: "manual",
   });
@@ -94,10 +94,10 @@ describe("The IODC token", () => {
     );
     expect(authorizeFetchResult.status).toEqual(302);
     const redirectUri = "http://localhost:3002/redirect?";
+    let location = authorizeFetchResult.headers.get("location");
     while (
-      authorizeFetchResult.headers
-        .get("location")
-        .substring(0, redirectUri.length) !== redirectUri
+      location &&
+      location.substring(0, redirectUri.length) !== redirectUri
     ) {
       // console.log(
       //   "Not redirected back yet",
@@ -130,12 +130,15 @@ describe("The IODC token", () => {
             redirect: "manual",
           }
         );
+        // console.log(
+        //   "authorizeFetchResult %s",
+        //   JSON.stringify(authorizeFetchResult.headers.raw())
+        // );
       }
+      location = authorizeFetchResult.headers.get("location");
     }
-    const callbackParams = authorizeFetchResult.headers
-      .get("location")
-      .substring(redirectUri.length)
-      .split("&");
+    expect(location).not.toBeNull();
+    const callbackParams = location.substring(redirectUri.length).split("&");
     // console.log("Redirected back now", callbackParams);
     code = callbackParams[0].substring("code=".length);
     idTokenJwt = callbackParams[1].substring("id_token=".length);

@@ -4,6 +4,7 @@ set -e
 export SERVER_ROOT=https://server
 export USERNAME=alice
 export PASSWORD=123
+export RESULTS_PATH=../NSS-webid-results.json
 
 export ALICE_WEBID=$SERVER_ROOT/profile/card#me
 # This curl command is specific to node-solid-server:
@@ -14,4 +15,5 @@ export COOKIE=`expr "$CURL_RESULT" : '^Set-Cookie:\ \(.*\).'`
 echo Server root is $SERVER_ROOT
 echo Cookie is $COOKIE
 
-npm run jest --json --outputFile="../web-results.json" "$@"
+# npm run jest "$@"
+npm run jest -- --json --outputFile="$RESULTS_PATH" "$@"
