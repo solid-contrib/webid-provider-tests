@@ -4,7 +4,12 @@ import fetch from "node-fetch";
 import { subtle } from "isomorphic-webcrypto";
 import base64url from "base64url";
 import * as RSA from "node-rsa";
-import { oidcIssuer, aliceWebId, aliceUsername, alicePassword } from "../helpers/env";
+import {
+  oidcIssuer,
+  aliceWebId,
+  aliceUsername,
+  alicePassword,
+} from "../helpers/env";
 
 const debug = Debug("token tests");
 
