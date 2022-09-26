@@ -173,10 +173,9 @@ describe("The IODC token", () => {
   test("id token has the right subject", async () => {
     expect(idTokenObj.sub).toEqual(aliceWebId);
   });
-  test("id token has an expiry time a few weeks in the future", async () => {
+  test("id token has an expiry time of at most 5 weeks in the future", async () => {
     const futureWeeks =
       (idTokenObj.exp * 1000 - new Date().getTime()) / (7 * 24 * 3600 * 1000);
-    expect(futureWeeks).toBeGreaterThan(1);
     expect(futureWeeks).toBeLessThan(5);
   });
   test("id token has an issued-at time a few seconds in the past", async () => {
