@@ -7,8 +7,11 @@ test("/.well-known/openid-configuration is valid JSON", async () => {
   );
   // console.log(`${SERVER_ROOT}/.well-known/openid-configuration`);
   expect(fetchResult.status).toEqual(200);
+  expect(fetchResult.headers.get("Access-Control-Allow-Origin")).toEqual("*");
   const body = await fetchResult.text();
-  // console.log('body:', body);
+
+  console.log('response headers:', (fetchResult.headers as any).raw());
+  console.log('body:', body);
   JSON.parse(body);
 });
 
